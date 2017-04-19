@@ -21,7 +21,6 @@ namespace DirectedStudies
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             DialogResult result = openFileDialog1.ShowDialog();
             if (result == DialogResult.OK) // Test result.
             {
