@@ -13,7 +13,7 @@ namespace DirectedStudies
 {
     public partial class Form1 : Form
     {
-        double[][][] input = new double[365][][];
+        double[][][] input = new double[366][][];
         public Form1()
         {
             InitializeComponent();
@@ -37,52 +37,49 @@ namespace DirectedStudies
                 //store each line
                 List<double[]> lines = new List<double[]>();
 
-                //while loop to go through each line and count the number of arrays for the 2 level
+                //while loop to go through each line and count the number of arrays for the 2 level and store the line
                 while ((line = reader.ReadLine()) != null)
                 {
                     //LINQ to break up string into int array by '\t'
                     arr = line.Split('\t').Select(n => Convert.ToDouble(n)).ToArray();
-                   
-                    if (times[arr[2]] == null)
-                    {
-                        times[arr[2]] = 1;
-                    } else
+                   try
                     {
                         times[arr[2]]++;
+                    } catch {
+                        times[arr[2]] = 1;
                     }
+
+                    //put the line into lines variable
+                    lines.Add(arr);
                 }
 
-               //reader.
-                //go through and start putting the data into the array
-                for (int i = 0; i < 365; i++)
-                {
-                    input[i] = new double[(int)times[i]][];
-
-                    //while loop to go through each line
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        //LINQ to break up string into int array by '\t'
-                        arr = line.Split('\t').Select(n => Convert.ToDouble(n)).ToArray();
-
-                        if (times[arr[2]] == null)
-                        {
-                            times[arr[2]] = 1;
-                        }
-                        else
-                        {
-                            times[arr[2]]++;
-                        }
-                    }
-                }
-
-                foreach (KeyValuePair<double, int?> entry in times)
-                {
-                    input[(int)arr[2]] = new double[times.Count][];
-                }
-
+                //Done with reader
                 reader.Close();
 
-                //pass the input to the object to calculate
+                //go through and initalize the second level array to the right size
+                foreach (KeyValuePair<double, int?> entry in times)
+                {
+                    input[(int) entry.Key] = new double[(int) entry.Value][];
+                }
+
+                //Need to go through the lines again and store the data
+                foreach (double[] l in lines)
+                {
+                    //initialize the third level of the 3 dimensional array
+                    for (int i = 0; i < input[(int)l[2]].Length; i++) {
+                        if (input[(int)l[2]][i] == null)
+                        {
+                            input[(int)l[2]][i] = new double[3];
+
+                            //Now assign the values (X at index 0, Y at index 1, and C at index 2 of the array) i.e. to access x of first iteration at time 1: input[1][0][0]
+                            input[(int)l[2]][i][0] = l[0];
+                            input[(int)l[2]][i][1] = l[1];
+                            input[(int)l[2]][i][2] = l[3];
+
+                            break;
+                        }
+                    }
+                }
             }
         }
 
